@@ -41,9 +41,7 @@ Use PLSDB annotations to examine some of the overall features of the *metG* enco
 Read in the filtered data that contains only plasmids that were from genera with >9 plasmids in PLSDB and summarise pMLST and PlasmidFinder results.
 
 ```{r}
-metg_plasmids_uid <- read.table("./1_data/plsdb_subset_uid.txt",
-                                col.names="NUCCORE_UID") %>%
-  data.frame()
+metg_plasmids_uid <- read.table("./1_data/metG_plsdb_uid.txt", col.names="NUCCORE_UID")
 
 plsdb <- read.table("./1_data/plsdb.tsv", 
                     header = TRUE, 
@@ -54,7 +52,7 @@ plsdb <- read.table("./1_data/plsdb.tsv",
   filter(!is.na(NUCCORE_UID)) %>%
   mutate(filtered_metg = ifelse(NUCCORE_UID %in% metg_plasmids_uid$NUCCORE_UID, "Y", "N"))
 
-metg_plasmids <- plsdb%>%
+metg_plasmids <- plsdb %>%
   right_join(metg_plasmids_uid, by="NUCCORE_UID")
 
 metg_plasmids %>% 
@@ -100,6 +98,12 @@ metg_plasmids %>%
 metg_plasmids %>%
   group_by(plasmidfinder) %>%
   summarise(n=n()) %>% arrange(-n) %>% kable()
+
+metg_plasmids %>% filter(TAXONOMY_family == "Enterobacteriaceae") %>% nrow()
+metg_plasmids %>% filter(TAXONOMY_family == "Burkholderiaceae") %>% nrow()
+
+metg_plasmids %>% filter(TAXONOMY_family == "Enterobacteriaceae") %>%
+  group_by(TAXONOMY_genus, plasmidfinder) %>% summarise(n=n()) %>% arrange(TAXONOMY_genus, -n) %>% kable()
 ```
 
 The predominant type is IncFIB(H89-PhagePlasmid)_1, HG530657. This relates to type plasmid NC_023916.1 "Escherichia coli H89 plasmid pECOH89" in Genbank ([Falgenhauer et al. 2014](https://doi.org/10.1128/genomea.00356-14)), which was identified in our search as harbouring *metG*.
@@ -185,13 +189,29 @@ metG_plasmids_CONJscan %>% select(replicon, T4SS_typeB) %>%
   mutate(NUCCORE_ACC = gsub("_seqs", "", replicon)) %>%
   left_join(plsdb, by="NUCCORE_ACC") %>%
   mutate(in_filtered = ifelse(NUCCORE_UID %in% metg_plasmids_uid$NUCCORE_UID, "Y", "N")) %>%
-  select(NUCCORE_Description, NUCCORE_Length, TAXONOMY_species, in_filtered) %>%
+  select(NUCCORE_Description, NUCCORE_Length, TAXONOMY_species, plasmidfinder, in_filtered) %>%
   arrange(in_filtered) %>% kable()
 ```
 
 Several of these were filtered from the previous dataset due to their length and unlikely plasmid status, or low plasmid representation in that genus. 
 
-Overall, we can conclude that predominantly, the *metG*-encoding plasmids are not self-mobilised by conjugation, with some exceptions, and that most of these plasmids are phage-plasmids. 
+Overall, we can conclude that predominantly, the Enterobacteriaceae *metG*-encoding plasmids are not self-mobilised by conjugation, with some exceptions, and that most of these plasmids are phage-plasmids. 
+
+What about the Burkholderiaceae? Compare with data in [DiCenzo et al. (2019) doi:10.1093/molbev/msy248](dx.doi.org/10.1093/molbev/msy248)
+
+```{r}
+dicenzo <- read.csv("./X_data/Data_Set_S1.csv", header = TRUE) %>%
+  rename(NUCCORE_ACC = Replicon_Accession)
+
+metg_plasmids %>% filter(TAXONOMY_family == "Burkholderiaceae") %>% 
+  left_join(dicenzo, by = "NUCCORE_ACC") %>% 
+  select(TAXONOMY_species, NUCCORE_Length, Species, Strain, Replicon_Type) %>%
+  group_by(TAXONOMY_species, Replicon_Type) %>% summarise(n = n())
+```
+
+This shows that all of the Ralstonia plasmids identified in the current study were predicted to be chromids by DiCenzo et al. 
+
+This shows that 3/84 *R. solanacearum* plasmids were predicted to be chromids, and 3/7 *R. pseudosolanacearum*.
 
 ### Comparing sequences of metG-encoding plasmids
 
@@ -258,7 +278,8 @@ genus_colours <- c("Escherichia" = "dodgerblue",
                    "Acinetobacter" = "cadetblue",
                    "Legionella" = "skyblue",
                    "Providencia" = "royalblue",
-                   "Non-Gammaproteobacteria / Unknown" = "grey50")
+                   "Ralstonia" = "brown",
+                   "Other / Unknown" = "grey50")
 
 (metg_genus_UMAP <- ggplot() +
   geom_point(data = plsdb_non_metg_sequences, aes(x = D1, y = D2), colour = "grey60", shape=16,
@@ -283,9 +304,9 @@ The *metG*-containing plasmids are diverse when considering the diversity of pla
 
 #### Comparing with one another
 
-To gain further insight into the differences between the different plasmids within Gammaproteobacteria, we calculated mash distances between these plasmids and plotted the resulting distance matrix.
+To gain further insight into the differences between the different metG-encoding plasmids, we calculated mash distances between these plasmids and plotted the resulting distance matrix.
 
-Perform this analysis with the filtered plasmids [described before](1_PLSDB_metG.md)
+Perform this analysis with the filtered plasmids [described before](1_PLSDB_trnalig.md)
 
 ```{r}
 plsdb %>% filter(filtered_metg == "Y") %>%
@@ -310,7 +331,7 @@ Read in data to R, and set up for plotting.
 
 ```{r}
 metg_dist <- read.table("./2_data/plsdb_metG_plasmids.msh.dst", fill=TRUE, skip=1,
-                        col.names=c("V0",paste("V", 1:198, sep="")),
+                        col.names=c("V0",paste("V", 1:273, sep="")),
                         row.names=1)
 
 metg_distmat <- as.dist(metg_dist, upper=TRUE, diag=TRUE)
@@ -378,8 +399,9 @@ class_plot_data <- plsdb_metg_sequences %>%
 annotations_df <- mutate(class_plot_data,
                          a = NUCCORE_ACC,
                          b = 1,
-                         taxonomy = ifelse(TAXONOMY_class != "Gammaproteobacteria" | is.na(TAXONOMY_class), 
-                                                   "Non-Gammaproteobacteria / Unknown", TAXONOMY_genus),
+                         taxonomy = ifelse(!(TAXONOMY_family %in% c("Enterobacteriaceae","Burkholderiaceae") |
+                                               is.na(TAXONOMY_family)),
+                                           "Other / Unknown", TAXONOMY_genus),
                          plot = factor("annotation", levels=c("plot","annotation"))) %>%
   select(a, b, taxonomy, plot)
 
@@ -417,7 +439,7 @@ mash triangle ./2_data/contig_9_SRR5005407_ref.msh \
 
 ```{r}
 metg_dist_pW <- read.table("./2_data/plsdb_metG_plasmids_pW.msh.dst", fill=TRUE, skip=1,
-                        col.names=c("V0",paste("V", 1:199, sep="")),
+                        col.names=c("V0",paste("V", 1:274, sep="")),
                         row.names=1)
 metg_distmat_pW <- as.dist(metg_dist_pW, upper=TRUE, diag=TRUE)
 
@@ -474,10 +496,9 @@ class_plot_data_pW <- left_join(ordered_accessions_pW, plsdb_metg_sequences,
 annotations_df_pW <- mutate(class_plot_data_pW,
                          a = NUCCORE_ACC,
                          b = 1,
-                         taxonomy = ifelse(TAXONOMY_class != "Gammaproteobacteria" | is.na(TAXONOMY_class), 
-                                                   "Non-Gammaproteobacteria / Unknown", TAXONOMY_genus),
-                         taxonomy = ifelse(NUCCORE_ACC == "contig_9_SRR5005407_ref",
-                                           "Shigella", taxonomy),
+                         taxonomy = ifelse(!(TAXONOMY_family %in% c("Enterobacteriaceae","Burkholderiaceae") |
+                                               is.na(TAXONOMY_family)),
+                                           "Other / Unknown", TAXONOMY_genus),
                          plot = factor("annotation", levels=c("plot","annotation"))) %>%
   select(a, b, taxonomy, plot)
 

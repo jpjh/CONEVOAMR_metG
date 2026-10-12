@@ -26,9 +26,7 @@ genera with \>9 plasmids in PLSDB and summarise pMLST and PlasmidFinder
 results.
 
 ``` r
-metg_plasmids_uid <- read.table("./1_data/plsdb_subset_uid.txt",
-                                col.names="NUCCORE_UID") %>%
-  data.frame()
+metg_plasmids_uid <- read.table("./1_data/metG_plsdb_uid.txt", col.names="NUCCORE_UID")
 
 plsdb <- read.table("./1_data/plsdb.tsv", 
                     header = TRUE, 
@@ -39,7 +37,7 @@ plsdb <- read.table("./1_data/plsdb.tsv",
   filter(!is.na(NUCCORE_UID)) %>%
   mutate(filtered_metg = ifelse(NUCCORE_UID %in% metg_plasmids_uid$NUCCORE_UID, "Y", "N"))
 
-metg_plasmids <- plsdb%>%
+metg_plasmids <- plsdb %>%
   right_join(metg_plasmids_uid, by="NUCCORE_UID")
 
 metg_plasmids %>% 
@@ -51,11 +49,11 @@ metg_plasmids %>%
   kable()
 ```
 
-| pmlst                                                                    |   n | min_size | max_size | mean_size |
-|:-------------------------------------------------------------------------|----:|---------:|---------:|----------:|
-| IncF RST(F-:A-:B-):FIA(-);FIB(-);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-)   | 167 |   62.256 |  128.323 |  108.6777 |
-| IncF RST(F-:A-:B-):FIA(-);FIB(~52);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-) |   1 |  152.530 |  152.530 |  152.5300 |
-| NA                                                                       |  30 |   66.608 |  899.693 |  350.3649 |
+| pmlst | n | min_size | max_size | mean_size |
+|:---|---:|---:|---:|---:|
+| IncF RST(F-:A-:B-):FIA(-);FIB(-);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-) | 165 | 62.256 | 128.323 | 108.664 |
+| IncF RST(F-:A-:B-):FIA(-);FIB(~52);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-) | 1 | 152.530 | 152.530 | 152.530 |
+| NA | 107 | 91.552 | 2210.741 | 1851.052 |
 
 Most of the plasmids were IncF type, but of indefinite subtype (“F-”)
 and lacking the FIA and FIB replicons. Thirty had untypable replicons
@@ -69,30 +67,26 @@ metg_plasmids %>%
   summarise(n=n()) %>% kable()
 ```
 
-    ## `summarise()` has grouped output by 'TAXONOMY_class', 'TAXONOMY_family'. You
-    ## can override using the `.groups` argument.
+    ## `summarise()` has regrouped the output.
+    ## ℹ Summaries were computed grouped by TAXONOMY_class, TAXONOMY_family, and
+    ##   pmlst.
+    ## ℹ Output is grouped by TAXONOMY_class and TAXONOMY_family.
+    ## ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+    ## ℹ Use `summarise(.by = c(TAXONOMY_class, TAXONOMY_family, pmlst))` for
+    ##   per-operation grouping (`?dplyr::dplyr_by`) instead.
 
-| TAXONOMY_class      | TAXONOMY_family      | pmlst                                                                    |   n |
-|:--------------------|:---------------------|:-------------------------------------------------------------------------|----:|
-| Actinomycetes       | Actinomycetaceae     | NA                                                                       |   1 |
-| Actinomycetes       | Tsukamurellaceae     | NA                                                                       |   1 |
-| Alphaproteobacteria | Rhizobiaceae         | NA                                                                       |   2 |
-| Bacilli             | Bacillaceae          | NA                                                                       |   2 |
-| Bacilli             | Lactobacillaceae     | NA                                                                       |   1 |
-| Bacteroidia         | Bacteroidaceae       | NA                                                                       |   2 |
-| Bacteroidia         | Tannerellaceae       | NA                                                                       |   1 |
-| Clostridia          | Oscillospiraceae     | NA                                                                       |   3 |
-| Coriobacteriia      | Coriobacteriaceae    | NA                                                                       |   1 |
-| Cyanophyceae        | Acaryochloridaceae   | NA                                                                       |   2 |
-| Gammaproteobacteria | Enterobacteriaceae   | IncF RST(F-:A-:B-):FIA(-);FIB(-);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-)   | 166 |
-| Gammaproteobacteria | Enterobacteriaceae   | IncF RST(F-:A-:B-):FIA(-);FIB(~52);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-) |   1 |
-| Gammaproteobacteria | Enterobacteriaceae   | NA                                                                       |   8 |
-| Gammaproteobacteria | Legionellaceae       | NA                                                                       |   1 |
-| Gammaproteobacteria | Moraxellaceae        | NA                                                                       |   1 |
-| Gammaproteobacteria | Morganellaceae       | NA                                                                       |   1 |
-| Gammaproteobacteria | Xanthomonadaceae     | NA                                                                       |   2 |
-| NA                  | Metamycoplasmataceae | NA                                                                       |   1 |
-| NA                  | NA                   | IncF RST(F-:A-:B-):FIA(-);FIB(-);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-)   |   1 |
+| TAXONOMY_class | TAXONOMY_family | pmlst | n |
+|:---|:---|:---|---:|
+| Actinomycetes | Nocardiaceae | NA | 1 |
+| Bacteroidia | Bacteroidaceae | NA | 1 |
+| Bacteroidia | Tannerellaceae | NA | 1 |
+| Betaproteobacteria | Burkholderiaceae | NA | 95 |
+| Clostridia | Oscillospiraceae | NA | 1 |
+| Gammaproteobacteria | Enterobacteriaceae | IncF RST(F-:A-:B-):FIA(-);FIB(-);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-) | 164 |
+| Gammaproteobacteria | Enterobacteriaceae | IncF RST(F-:A-:B-):FIA(-);FIB(~52);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-) | 1 |
+| Gammaproteobacteria | Enterobacteriaceae | NA | 7 |
+| Gammaproteobacteria | Morganellaceae | NA | 1 |
+| NA | NA | IncF RST(F-:A-:B-):FIA(-);FIB(-);FIC(-);FII(-);FIIK(-);FIIS(-);FIIY(-) | 1 |
 
 Non-Gammaproteobacterial plasmids were not typable, excepting one ‘NA’
 plasmid which on futher inspection came from a non-cultured bacterium.
@@ -110,13 +104,13 @@ metg_plasmids %>%
   kable()
 ```
 
-| plasmidfinder                                                           |   n | min_size | max_size | mean_size |
-|:------------------------------------------------------------------------|----:|---------:|---------:|----------:|
-| IncFIB(AP001918)\_1, AP001918, \|IncFIB(H89-PhagePlasmid)\_1, HG530657, |   1 |  152.530 |  152.530 |  152.5300 |
-| IncFIB(H89-PhagePlasmid)\_1, HG530657,                                  | 107 |   62.256 |  128.323 |  107.5554 |
-| IncFIB(pHCM2)\_1, AL513384,                                             |   6 |   94.797 |  113.610 |  103.8340 |
-| IncFIB(pLF82-PhagePlasmid)\_1, CU638872,                                |  54 |  101.340 |  126.289 |  111.4397 |
-| NA                                                                      |  30 |   66.608 |  899.693 |  350.3649 |
+| plasmidfinder | n | min_size | max_size | mean_size |
+|:---|---:|---:|---:|---:|
+| IncFIB(AP001918)\_1, AP001918, \|IncFIB(H89-PhagePlasmid)\_1, HG530657, | 1 | 152.530 | 152.530 | 152.5300 |
+| IncFIB(H89-PhagePlasmid)\_1, HG530657, | 106 | 62.256 | 128.323 | 107.5292 |
+| IncFIB(pHCM2)\_1, AL513384, | 6 | 94.797 | 113.610 | 103.8340 |
+| IncFIB(pLF82-PhagePlasmid)\_1, CU638872, | 53 | 101.340 | 126.289 | 111.4804 |
+| NA | 107 | 91.552 | 2210.741 | 1851.0521 |
 
 Here we have a bit more definition: the *metG* encoding plasmids are
 typed by PlasmidFinder as IncFIB, and there is indication that they are
@@ -128,32 +122,28 @@ metg_plasmids %>%
   summarise(n=n()) %>% kable()
 ```
 
-    ## `summarise()` has grouped output by 'TAXONOMY_class', 'TAXONOMY_family'. You
-    ## can override using the `.groups` argument.
+    ## `summarise()` has regrouped the output.
+    ## ℹ Summaries were computed grouped by TAXONOMY_class, TAXONOMY_family, and
+    ##   plasmidfinder.
+    ## ℹ Output is grouped by TAXONOMY_class and TAXONOMY_family.
+    ## ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+    ## ℹ Use `summarise(.by = c(TAXONOMY_class, TAXONOMY_family, plasmidfinder))` for
+    ##   per-operation grouping (`?dplyr::dplyr_by`) instead.
 
-| TAXONOMY_class      | TAXONOMY_family      | plasmidfinder                                                           |   n |
-|:--------------------|:---------------------|:------------------------------------------------------------------------|----:|
-| Actinomycetes       | Actinomycetaceae     | NA                                                                      |   1 |
-| Actinomycetes       | Tsukamurellaceae     | NA                                                                      |   1 |
-| Alphaproteobacteria | Rhizobiaceae         | NA                                                                      |   2 |
-| Bacilli             | Bacillaceae          | NA                                                                      |   2 |
-| Bacilli             | Lactobacillaceae     | NA                                                                      |   1 |
-| Bacteroidia         | Bacteroidaceae       | NA                                                                      |   2 |
-| Bacteroidia         | Tannerellaceae       | NA                                                                      |   1 |
-| Clostridia          | Oscillospiraceae     | NA                                                                      |   3 |
-| Coriobacteriia      | Coriobacteriaceae    | NA                                                                      |   1 |
-| Cyanophyceae        | Acaryochloridaceae   | NA                                                                      |   2 |
-| Gammaproteobacteria | Enterobacteriaceae   | IncFIB(AP001918)\_1, AP001918, \|IncFIB(H89-PhagePlasmid)\_1, HG530657, |   1 |
-| Gammaproteobacteria | Enterobacteriaceae   | IncFIB(H89-PhagePlasmid)\_1, HG530657,                                  | 106 |
-| Gammaproteobacteria | Enterobacteriaceae   | IncFIB(pHCM2)\_1, AL513384,                                             |   6 |
-| Gammaproteobacteria | Enterobacteriaceae   | IncFIB(pLF82-PhagePlasmid)\_1, CU638872,                                |  54 |
-| Gammaproteobacteria | Enterobacteriaceae   | NA                                                                      |   8 |
-| Gammaproteobacteria | Legionellaceae       | NA                                                                      |   1 |
-| Gammaproteobacteria | Moraxellaceae        | NA                                                                      |   1 |
-| Gammaproteobacteria | Morganellaceae       | NA                                                                      |   1 |
-| Gammaproteobacteria | Xanthomonadaceae     | NA                                                                      |   2 |
-| NA                  | Metamycoplasmataceae | NA                                                                      |   1 |
-| NA                  | NA                   | IncFIB(H89-PhagePlasmid)\_1, HG530657,                                  |   1 |
+| TAXONOMY_class | TAXONOMY_family | plasmidfinder | n |
+|:---|:---|:---|---:|
+| Actinomycetes | Nocardiaceae | NA | 1 |
+| Bacteroidia | Bacteroidaceae | NA | 1 |
+| Bacteroidia | Tannerellaceae | NA | 1 |
+| Betaproteobacteria | Burkholderiaceae | NA | 95 |
+| Clostridia | Oscillospiraceae | NA | 1 |
+| Gammaproteobacteria | Enterobacteriaceae | IncFIB(AP001918)\_1, AP001918, \|IncFIB(H89-PhagePlasmid)\_1, HG530657, | 1 |
+| Gammaproteobacteria | Enterobacteriaceae | IncFIB(H89-PhagePlasmid)\_1, HG530657, | 105 |
+| Gammaproteobacteria | Enterobacteriaceae | IncFIB(pHCM2)\_1, AL513384, | 6 |
+| Gammaproteobacteria | Enterobacteriaceae | IncFIB(pLF82-PhagePlasmid)\_1, CU638872, | 53 |
+| Gammaproteobacteria | Enterobacteriaceae | NA | 7 |
+| Gammaproteobacteria | Morganellaceae | NA | 1 |
+| NA | NA | IncFIB(H89-PhagePlasmid)\_1, HG530657, | 1 |
 
 ``` r
 metg_plasmids %>%
@@ -161,13 +151,49 @@ metg_plasmids %>%
   summarise(n=n()) %>% arrange(-n) %>% kable()
 ```
 
-| plasmidfinder                                                           |   n |
-|:------------------------------------------------------------------------|----:|
-| IncFIB(H89-PhagePlasmid)\_1, HG530657,                                  | 107 |
-| IncFIB(pLF82-PhagePlasmid)\_1, CU638872,                                |  54 |
-| NA                                                                      |  30 |
-| IncFIB(pHCM2)\_1, AL513384,                                             |   6 |
-| IncFIB(AP001918)\_1, AP001918, \|IncFIB(H89-PhagePlasmid)\_1, HG530657, |   1 |
+| plasmidfinder | n |
+|:---|---:|
+| NA | 107 |
+| IncFIB(H89-PhagePlasmid)\_1, HG530657, | 106 |
+| IncFIB(pLF82-PhagePlasmid)\_1, CU638872, | 53 |
+| IncFIB(pHCM2)\_1, AL513384, | 6 |
+| IncFIB(AP001918)\_1, AP001918, \|IncFIB(H89-PhagePlasmid)\_1, HG530657, | 1 |
+
+``` r
+metg_plasmids %>% filter(TAXONOMY_family == "Enterobacteriaceae") %>% nrow()
+```
+
+    ## [1] 172
+
+``` r
+metg_plasmids %>% filter(TAXONOMY_family == "Burkholderiaceae") %>% nrow()
+```
+
+    ## [1] 95
+
+``` r
+metg_plasmids %>% filter(TAXONOMY_family == "Enterobacteriaceae") %>%
+  group_by(TAXONOMY_genus, plasmidfinder) %>% summarise(n=n()) %>% arrange(TAXONOMY_genus, -n) %>% kable()
+```
+
+    ## `summarise()` has regrouped the output.
+    ## ℹ Summaries were computed grouped by TAXONOMY_genus and plasmidfinder.
+    ## ℹ Output is grouped by TAXONOMY_genus.
+    ## ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+    ## ℹ Use `summarise(.by = c(TAXONOMY_genus, plasmidfinder))` for per-operation
+    ##   grouping (`?dplyr::dplyr_by`) instead.
+
+| TAXONOMY_genus | plasmidfinder | n |
+|:---|:---|---:|
+| Escherichia | IncFIB(H89-PhagePlasmid)\_1, HG530657, | 100 |
+| Escherichia | IncFIB(pLF82-PhagePlasmid)\_1, CU638872, | 52 |
+| Escherichia | IncFIB(pHCM2)\_1, AL513384, | 6 |
+| Escherichia | NA | 2 |
+| Escherichia | IncFIB(AP001918)\_1, AP001918, \|IncFIB(H89-PhagePlasmid)\_1, HG530657, | 1 |
+| Klebsiella | NA | 3 |
+| Salmonella | NA | 2 |
+| Shigella | IncFIB(H89-PhagePlasmid)\_1, HG530657, | 5 |
+| Shigella | IncFIB(pLF82-PhagePlasmid)\_1, CU638872, | 1 |
 
 The predominant type is IncFIB(H89-PhagePlasmid)\_1, HG530657. This
 relates to type plasmid NC_023916.1 “Escherichia coli H89 plasmid
@@ -272,31 +298,70 @@ metG_plasmids_CONJscan %>% select(replicon, T4SS_typeB) %>%
   mutate(NUCCORE_ACC = gsub("_seqs", "", replicon)) %>%
   left_join(plsdb, by="NUCCORE_ACC") %>%
   mutate(in_filtered = ifelse(NUCCORE_UID %in% metg_plasmids_uid$NUCCORE_UID, "Y", "N")) %>%
-  select(NUCCORE_Description, NUCCORE_Length, TAXONOMY_species, in_filtered) %>%
+  select(NUCCORE_Description, NUCCORE_Length, TAXONOMY_species, plasmidfinder, in_filtered) %>%
   arrange(in_filtered) %>% kable()
 ```
 
-| NUCCORE_Description                                                                   | NUCCORE_Length | TAXONOMY_species          | in_filtered |
-|:--------------------------------------------------------------------------------------|---------------:|:--------------------------|:------------|
-| Ralstonia solanacearum strain SEPPX05 plasmid pSEPPX05, complete sequence             |        2066085 | Ralstonia_solanacearum    | N           |
-| Ralstonia solanacearum strain SY1 plasmid unnamed, complete sequence                  |        2177065 | Ralstonia_solanacearum    | N           |
-| Ralstonia solanacearum MolK2 plasmid pmega, complete sequence                         |        2326525 | Ralstonia_solanacearum    | N           |
-| Photobacterium sp. DA100 plasmid pDA100, complete sequence                            |        2139191 | Photobacterium_sp.\_DA100 | N           |
-| Proteus mirabilis strain H110 plasmid unnamed, complete sequence                      |        4088254 | Proteus_mirabilis         | N           |
-| Escherichia coli strain F17EC0245 plasmid pF17EC0245-1, complete sequence             |         393046 | Escherichia_coli          | Y           |
-| Acaryochloris marina MBIC11017 plasmid pREB6, complete sequence                       |         172728 | Acaryochloris_marina      | Y           |
-| Ruminococcus albus 7 = DSM 20455 plasmid pRUMAL02, complete sequence                  |         352646 | Ruminococcus_albus        | Y           |
-| Vescimonas fastidiosa strain MM35 plasmid pMM35_01                                    |         860917 | Vescimonas_fastidiosa     | Y           |
-| Acaryochloris marina MBIC10699 plasmid pREC2, complete sequence                       |         329949 | Acaryochloris_marina      | Y           |
-| Klebsiella pneumoniae strain 2020S09-154 plasmid p2020S09-154-727k, complete sequence |         727204 | Klebsiella_pneumoniae     | Y           |
+| NUCCORE_Description | NUCCORE_Length | TAXONOMY_species | plasmidfinder | in_filtered |
+|:---|---:|:---|:---|:---|
+| Acaryochloris marina MBIC11017 plasmid pREB6, complete sequence | 172728 | Acaryochloris_marina | NA | N |
+| Vescimonas fastidiosa strain MM35 plasmid pMM35_01 | 860917 | Vescimonas_fastidiosa | NA | N |
+| Acaryochloris marina MBIC10699 plasmid pREC2, complete sequence | 329949 | Acaryochloris_marina | NA | N |
+| Ralstonia solanacearum MolK2 plasmid pmega, complete sequence | 2326525 | Ralstonia_solanacearum | NA | N |
+| Photobacterium sp. DA100 plasmid pDA100, complete sequence | 2139191 | Photobacterium_sp.\_DA100 | NA | N |
+| Klebsiella pneumoniae strain 2020S09-154 plasmid p2020S09-154-727k, complete sequence | 727204 | Klebsiella_pneumoniae | NA | N |
+| Proteus mirabilis strain H110 plasmid unnamed, complete sequence | 4088254 | Proteus_mirabilis | NA | N |
+| Ralstonia solanacearum strain SEPPX05 plasmid pSEPPX05, complete sequence | 2066085 | Ralstonia_solanacearum | NA | Y |
+| Ralstonia solanacearum strain SY1 plasmid unnamed, complete sequence | 2177065 | Ralstonia_solanacearum | NA | Y |
+| Escherichia coli strain F17EC0245 plasmid pF17EC0245-1, complete sequence | 393046 | Escherichia_coli | NA | Y |
+| Ruminococcus albus 7 = DSM 20455 plasmid pRUMAL02, complete sequence | 352646 | Ruminococcus_albus | NA | Y |
 
 Several of these were filtered from the previous dataset due to their
 length and unlikely plasmid status, or low plasmid representation in
 that genus.
 
-Overall, we can conclude that predominantly, the *metG*-encoding
-plasmids are not self-mobilised by conjugation, with some exceptions,
-and that most of these plasmids are phage-plasmids.
+Overall, we can conclude that predominantly, the Enterobacteriaceae
+*metG*-encoding plasmids are not self-mobilised by conjugation, with
+some exceptions, and that most of these plasmids are phage-plasmids.
+
+What about the Burkholderiaceae? Compare with data in [DiCenzo et
+al. (2019) doi:10.1093/molbev/msy248](dx.doi.org/10.1093/molbev/msy248)
+
+``` r
+dicenzo <- read.csv("./X_data/Data_Set_S1.csv", header = TRUE) %>%
+  rename(NUCCORE_ACC = Replicon_Accession)
+
+metg_plasmids %>% filter(TAXONOMY_family == "Burkholderiaceae") %>% 
+  left_join(dicenzo, by = "NUCCORE_ACC") %>% 
+  select(TAXONOMY_species, NUCCORE_Length, Species, Strain, Replicon_Type) %>%
+  group_by(TAXONOMY_species, Replicon_Type) %>% summarise(n = n())
+```
+
+    ## `summarise()` has regrouped the output.
+    ## ℹ Summaries were computed grouped by TAXONOMY_species and Replicon_Type.
+    ## ℹ Output is grouped by TAXONOMY_species.
+    ## ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+    ## ℹ Use `summarise(.by = c(TAXONOMY_species, Replicon_Type))` for per-operation
+    ##   grouping (`?dplyr::dplyr_by`) instead.
+
+    ## # A tibble: 8 × 3
+    ## # Groups:   TAXONOMY_species [6]
+    ##   TAXONOMY_species             Replicon_Type        n
+    ##   <chr>                        <chr>            <int>
+    ## 1 Ralstonia_nicotianae         <NA>                 1
+    ## 2 Ralstonia_pseudosolanacearum Putative chromid     3
+    ## 3 Ralstonia_pseudosolanacearum <NA>                 4
+    ## 4 Ralstonia_solanacearum       Putative chromid     3
+    ## 5 Ralstonia_solanacearum       <NA>                81
+    ## 6 Ralstonia_sp._RS642          <NA>                 1
+    ## 7 Ralstonia_sp._RS647          <NA>                 1
+    ## 8 Ralstonia_sp._RS650          <NA>                 1
+
+This shows that all of the Ralstonia plasmids identified in the current
+study were predicted to be chromids by DiCenzo et al. 
+
+This shows that 3/84 *R. solanacearum* plasmids were predicted to be
+chromids, and 3/7 *R. pseudosolanacearum*.
 
 ### Comparing sequences of metG-encoding plasmids
 
@@ -317,7 +382,7 @@ ggplot(data=plsdb, aes(x=D1, y=D2)) + geom_point()
     ## Warning: Removed 558 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 There are 558 rows lacking UMAP data.
 
@@ -357,7 +422,7 @@ class_colours <- c("Actinobacteria" = "deeppink",
     ## Warning: Removed 558 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Gives a good overview of the sequence diversity amongst the plasmids of
 interest.
@@ -373,16 +438,13 @@ plsdb_metg_sequences %>% filter(TAXONOMY_class == "Gammaproteobacteria") %>%
   group_by(TAXONOMY_genus) %>% count() %>% arrange(-n) %>% kable()
 ```
 
-| TAXONOMY_genus   |   n |
-|:-----------------|----:|
-| Escherichia      | 163 |
-| Shigella         |   6 |
-| Klebsiella       |   4 |
-| Salmonella       |   2 |
-| Stenotrophomonas |   2 |
-| Acinetobacter    |   1 |
-| Legionella       |   1 |
-| Providencia      |   1 |
+| TAXONOMY_genus |   n |
+|:---------------|----:|
+| Escherichia    | 161 |
+| Shigella       |   6 |
+| Klebsiella     |   3 |
+| Salmonella     |   2 |
+| Providencia    |   1 |
 
 ``` r
 genus_colours <- c("Escherichia" = "dodgerblue",
@@ -393,7 +455,8 @@ genus_colours <- c("Escherichia" = "dodgerblue",
                    "Acinetobacter" = "cadetblue",
                    "Legionella" = "skyblue",
                    "Providencia" = "royalblue",
-                   "Non-Gammaproteobacteria / Unknown" = "grey50")
+                   "Ralstonia" = "brown",
+                   "Other / Unknown" = "grey50")
 
 (metg_genus_UMAP <- ggplot() +
   geom_point(data = plsdb_non_metg_sequences, aes(x = D1, y = D2), colour = "grey60", shape=16,
@@ -413,7 +476,7 @@ genus_colours <- c("Escherichia" = "dodgerblue",
     ## Warning: Removed 558 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 png("./figs/umap_plot.png", height=4.8, width=7.2, units="in", res=300)
@@ -437,11 +500,11 @@ plasmids within the Gammaproteobacteria.
 #### Comparing with one another
 
 To gain further insight into the differences between the different
-plasmids within Gammaproteobacteria, we calculated mash distances
-between these plasmids and plotted the resulting distance matrix.
+metG-encoding plasmids, we calculated mash distances between these
+plasmids and plotted the resulting distance matrix.
 
 Perform this analysis with the filtered plasmids [described
-before](1_PLSDB_metG.md)
+before](1_PLSDB_trnalig.md)
 
 ``` r
 plsdb %>% filter(filtered_metg == "Y") %>%
@@ -467,7 +530,7 @@ Read in data to R, and set up for plotting.
 
 ``` r
 metg_dist <- read.table("./2_data/plsdb_metG_plasmids.msh.dst", fill=TRUE, skip=1,
-                        col.names=c("V0",paste("V", 1:198, sep="")),
+                        col.names=c("V0",paste("V", 1:273, sep="")),
                         row.names=1)
 
 metg_distmat <- as.dist(metg_dist, upper=TRUE, diag=TRUE)
@@ -492,7 +555,7 @@ ggplot(data=metg_dist_df) +
   scale_fill_gradient(low = "lightblue1", high = "navy")
 ```
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 Need to cluster according to similarity, and fix the overlapping axis
 labels.
@@ -504,7 +567,7 @@ metg_dendro <- as.dendrogram(hclust(metg_distmat))
 (metg_dendro_plot <- ggdendrogram(data = metg_dendro, rotate = TRUE))
 ```
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 Get reordered plasmid order.
 
@@ -526,7 +589,7 @@ Plot heat map with reordered plasmids.
   ggtitle("A Heatmap of the Plasmids Harbouring MetG Homologues in PLSDB, using Bakta Annotation"))     
 ```
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 Make an aligned table with taxonomic annotations to replace accession
 numbers on axes. Get accessions in the correct order, extract taxonomic
@@ -544,8 +607,9 @@ class_plot_data <- plsdb_metg_sequences %>%
 annotations_df <- mutate(class_plot_data,
                          a = NUCCORE_ACC,
                          b = 1,
-                         taxonomy = ifelse(TAXONOMY_class != "Gammaproteobacteria" | is.na(TAXONOMY_class), 
-                                                   "Non-Gammaproteobacteria / Unknown", TAXONOMY_genus),
+                         taxonomy = ifelse(!(TAXONOMY_family %in% c("Enterobacteriaceae","Burkholderiaceae") |
+                                               is.na(TAXONOMY_family)),
+                                           "Other / Unknown", TAXONOMY_genus),
                          plot = factor("annotation", levels=c("plot","annotation"))) %>%
   select(a, b, taxonomy, plot)
 
@@ -567,7 +631,7 @@ annotations_df <- mutate(class_plot_data,
         legend.position="right"))
 ```
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ``` r
 png("./figs/dist_plot.png", height=4.6, width=7.2, units="in", res=300)
@@ -590,7 +654,7 @@ mash triangle ./2_data/contig_9_SRR5005407_ref.msh \
 
 ``` r
 metg_dist_pW <- read.table("./2_data/plsdb_metG_plasmids_pW.msh.dst", fill=TRUE, skip=1,
-                        col.names=c("V0",paste("V", 1:199, sep="")),
+                        col.names=c("V0",paste("V", 1:274, sep="")),
                         row.names=1)
 metg_distmat_pW <- as.dist(metg_dist_pW, upper=TRUE, diag=TRUE)
 
@@ -609,7 +673,7 @@ ggplot(data=metg_dist_df_pW) +
   scale_fill_gradient(low = "lightblue1", high = "navy")
 ```
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 Need to cluster according to similarity, and fix the overlapping axis
 labels.
@@ -619,7 +683,7 @@ metg_dendro_pW <- as.dendrogram(hclust(metg_distmat_pW))
 ggdendrogram(data = metg_dendro_pW, rotate = TRUE)
 ```
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 Get reordered plasmid order.
 
@@ -640,7 +704,7 @@ Plot heat map with reordered plasmids.
         legend.position="right"))
 ```
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 Again, annotate taxonomic classifications. Manual taxonomic additions
 are required for pWPMR2, which is highlighted by an arrow in the plot.
@@ -655,10 +719,9 @@ class_plot_data_pW <- left_join(ordered_accessions_pW, plsdb_metg_sequences,
 annotations_df_pW <- mutate(class_plot_data_pW,
                          a = NUCCORE_ACC,
                          b = 1,
-                         taxonomy = ifelse(TAXONOMY_class != "Gammaproteobacteria" | is.na(TAXONOMY_class), 
-                                                   "Non-Gammaproteobacteria / Unknown", TAXONOMY_genus),
-                         taxonomy = ifelse(NUCCORE_ACC == "contig_9_SRR5005407_ref",
-                                           "Shigella", taxonomy),
+                         taxonomy = ifelse(!(TAXONOMY_family %in% c("Enterobacteriaceae","Burkholderiaceae") |
+                                               is.na(TAXONOMY_family)),
+                                           "Other / Unknown", TAXONOMY_genus),
                          plot = factor("annotation", levels=c("plot","annotation"))) %>%
   select(a, b, taxonomy, plot)
 
@@ -682,7 +745,7 @@ annotations_df_pW <- mutate(class_plot_data_pW,
         legend.position="right"))
 ```
 
-![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](2_metG_Plasmids_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ``` r
 png("./figs/dist_plot_pW.png", height=4.6, width=7.2, units="in", res=300)

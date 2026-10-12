@@ -1,7 +1,9 @@
 # CONEVOAMR_metG
-[Convergent evolution of Enterobacteriaceae in epidemiological networks with high antimicrobial use](https://gtr.ukri.org/projects?ref=BB%2FV009184%2F2) — analysis of *metG*-encoding plasmids.
+Data and analysis associated with the manuscript:
 
-Associated with a preprint manuscript (in prep).
+Tam YL, De Silva PM, Barker CR, Li R, Santos L, Batisti Biffignandi G, Chong CE, Mason LCE, Nair S, Ribeca P, Bayliss SC, Jenkins C, Bakshi S, Hall JPJ, Cowley L, Baker KS, 2024. ***Phage-plasmid borne methionine tRNA ligase mediates epidemiologically relevant antimicrobial persistence.*** medRxiv. https://doi.org/10.1101/2024.10.27.24316207
+
+Corresponding author: Kate Baker, University of Cambridge ([kb827@cam.ac.uk](kb827@cam.ac.uk)).
 
 ---
 
@@ -9,8 +11,7 @@ Associated with a preprint manuscript (in prep).
 
 1. Identification of *metG*-encoding plasmids in PLSDB. What bacteria carry *metG*-encoding plasmids? ([`1_PLSDB_metG.Rmd`](./docs/1_PLSDB_metG.md))
 2. Comparison of *metG*-encoding plasmids from PLSDB. What are the features and similarities between *metG*-encoding plasmids? ([`2_metG_plasmids.Rmd`](./docs/2_metG_plasmids.md))
-3. Comparison of *metG* alleles between plasmids and chromosomes. Are plasmid-encoded *metG* alleles different to those on the chromosome? (TBD)
 
 ---
 
-Questions, comments, suggestions: please [get in touch](mailto:j.p.j.hall@liverpool.ac.uk)!
+Questions, comments, suggestions: please get in touch: [j.p.j.hall@liverpool.ac.uk](mailto:j.p.j.hall@liverpool.ac.uk)!
