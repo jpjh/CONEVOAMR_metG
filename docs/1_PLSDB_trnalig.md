@@ -859,6 +859,6 @@ plasmid_trnalig %>% select(Accession,
 
 ------------------------------------------------------------------------
 
-**[On to analysis of metG-encoding plasmids.](2_PLSDB_metG.md)**
+**[On to analysis of metG-encoding plasmids.](2_metG_Plasmids.md)**
 
 **[Back to index.](../README.md)**

@@ -9,8 +9,8 @@ Corresponding author: Kate Baker, University of Cambridge ([kb827@cam.ac.uk](kb8
 
 ### RMarkdown scripts describing analysis of plasmids, figure generation, etc.
 
-1. Identification of *metG*-encoding plasmids in PLSDB. What bacteria carry *metG*-encoding plasmids? ([`1_PLSDB_metG.Rmd`](./docs/1_PLSDB_metG.md))
-2. Comparison of *metG*-encoding plasmids from PLSDB. What are the features and similarities between *metG*-encoding plasmids? ([`2_metG_plasmids.Rmd`](./docs/2_metG_plasmids.md))
+1. Identification of *metG*-encoding plasmids in PLSDB. What bacteria carry *metG*-encoding plasmids? ([`1_PLSDB_trnalig.Rmd`](./docs/1_PLSDB_trnalig.md))
+2. Comparison of *metG*-encoding plasmids from PLSDB. What are the features and similarities between *metG*-encoding plasmids? ([`2_metG_Plasmids.Rmd`](./docs/2_metG_Plasmids.md))
 
 ---
 
