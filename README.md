@@ -1,5 +1,5 @@
 # CONEVOAMR_metG
-Data and analysis associated with the manuscript:
+These analyses are associated with the manuscript:
 
 Tam YL, De Silva PM, Barker CR, Li R, Santos L, Batisti Biffignandi G, Chong CE, Mason LCE, Nair S, Ribeca P, Bayliss SC, Jenkins C, Bakshi S, Hall JPJ, Cowley L, Baker KS, 2024. ***Phage-plasmid borne methionine tRNA ligase mediates epidemiologically relevant antimicrobial persistence.*** medRxiv. https://doi.org/10.1101/2024.10.27.24316207
 
